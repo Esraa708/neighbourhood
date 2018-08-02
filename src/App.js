@@ -25,14 +25,7 @@ class App extends Component {
     if (this.state.query) {
       const match = new RegExp(escapeRegExp(this.state.query), 'i');
       // match.test('esraa');
-      displayingPlaces = this.state.locations.filter((element) => {
-        match.test(element.title);
-        if (this.state.marker.title !== element.title) {
-          this.setState((marker) => {
-            marker.setMap = null;
-          })
-        }
-      });
+      displayingPlaces = this.state.locations.filter((element) => match.test(element.title));
 
 
     } else {
@@ -40,7 +33,7 @@ class App extends Component {
     }
     displayingPlaces.sort(sortBy('title'));
 
-    console.log(this.state.marker)
+    console.log(displayingPlaces)
     return (
       <div className="App">
         <ListView locations={this.state.locations}
