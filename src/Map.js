@@ -1,54 +1,87 @@
 import React, { Component } from 'react';
+import scriptLoader from 'react-async-script-loader';
+// import {myPlaces} from './places';
+// var locations=myPlaces;
+var markers = [];
+var infoWindows = [];
+class Map extends Component {
 
-class ListView extends Component {
-    openNav() {
-        document.getElementById("mySidenav").style.width = '250px';
-        document.getElementById("myMab").style.marginLeft = '250px';
+    state = {
+      map: {},
+ 
+
     }
-    closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-        document.getElementById("myMab").style.marginLeft = "0";
-    }
-    render() {
-        //filtering the list
-console.log(this.props.filteredPlaces);
+  componentWillReceiveProps({ isScriptLoaded, isScriptLoadSucceed }) {
+    if (isScriptLoaded && !this.props.isScriptLoaded) {
+      if (isScriptLoadSucceed) {
+        var mymap = new window.google.maps.Map(document.getElementById('myMab'), {
+          center: {
+            lat: 26.820553,
+            lng: 30.802498
+          },
+          zoom: 6
 
-        return (
-            <div>
-
-                <div id="mySidenav" className="sidenav">
-                    {/* <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a> */}
-                    <button className="closebtn" onClick={this.closeNav}>&times;</button>
-                    <h1>Enter a place</h1>
+        });
+      
+        var infoWindow = new window.google.maps.InfoWindow();
+        var bounds = new window.google.maps.LatLngBounds();
+        this.props.filteredPlaces.map((element) => {
+          var marker = new window.google.maps.Marker({
+            map: mymap,
+            position: element.location,
+            title: element.title,
+            animation: window.google.maps.Animation.DROP,
+            id: element.id
+          })
+            marker.map=mymap;
+          // this.props.filteredPlaces.marker=marker;
+          // this.props.markers.push(marker);
+          // marker.setVisible(true);
          
-                    <input type='text' placeholder='search places'
-                     value={this.props.query} 
-                     onChange={(event) =>this.props.updateQuery(event.target.value)}/>
-                    <ul>
-                        {this.props.filteredPlaces.map((element) => (
-                            <li key={element.id}>
-                                {element.title}
-                            </li>
-
-                        ))
-                        }
-
-                    </ul>
+          bounds.extend(marker.position);
+          marker.addListener('click', function () {
+            populateInfoWindow(this, infoWindow);
+            infoWindows.push(infoWindow);
+          });
 
 
-                </div>
+          mymap.fitBounds(bounds);
+        });// this is the end of the mapping
+        //this function I learnt it from lessons
+        function populateInfoWindow(marker, infowindow) {
+          if (infowindow.marker !== marker) {
+            infowindow.marker = marker;
+            infowindow.setContent('<div>hello</div>');
+            infowindow.open(mymap, marker);
+            infowindow.addListener('closeclick', function () {
+              infowindow.setMarker = null;
+            });
+            infowindow.setMarker = null;
+          }
+
+        }
 
 
-                {/* <span onClick={this.openNav}>open</span> */}
-                {/* <div className='menu' onClick={this.openNav}>
-                    <div className='burger'  ></div>
-                    <div className='burger'  ></div>
-                    <div className='burger'  ></div>
-                </div> */}
+      } else {
+        setTimeout(() => {
+          alert('the is an error');
+        }, 500)
+      }
 
-            </div>
-        );
     }
+  }
+
+  render() {
+    console.log(this.props.filteredPlaces);
+    return (
+      <div id='myMab'>
+      </div>
+    );
+  }
 }
 
-export default ListView;
+export default scriptLoader(['https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BMkMCB3RAcTv30V5ob3MrOD4-IQoLM4']
+  , "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")(Map);;
+
+
+
