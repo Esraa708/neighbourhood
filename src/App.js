@@ -11,7 +11,9 @@ class App extends Component {
     map: {},
     locations: myPlaces,
     marker: [],
-    query: ''
+    query: '',
+    filteredPlaces:[]
+    
   }
 
   updateQuery = (query) => {
@@ -26,28 +28,37 @@ class App extends Component {
       const match = new RegExp(escapeRegExp(this.state.query), 'i');
       // match.test('esraa');
       displayingPlaces = this.state.locations.filter((element) => match.test(element.title));
+      // marker.setVisible(true);
 
 
     } else {
       displayingPlaces = this.state.locations;
+      
     }
-    displayingPlaces.sort(sortBy('title'));
+   
 
-    console.log(displayingPlaces)
+      this.state.filteredPlaces=displayingPlaces;
+
+   
+    displayingPlaces.sort(sortBy('title'));
+    
+   
+
+    console.log(this.state.filteredPlaces);
     return (
       <div className="App">
         <ListView locations={this.state.locations}
           query={this.state.query}
           updateQuery={this.updateQuery}
           markers={this.state.marker}
-          displayingPlaces={displayingPlaces}
+          filteredPlaces={this.state.filteredPlaces}
 
         />
         <Map map={this.state.map}
           locations={this.state.locations}
           markers={this.state.marker}
           query={this.state.query}
-          displayingPlaces={displayingPlaces}
+          filteredPlaces={this.state.filteredPlaces}
         />
 
       </div>

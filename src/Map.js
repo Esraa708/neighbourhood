@@ -1,90 +1,54 @@
 import React, { Component } from 'react';
-import scriptLoader from 'react-async-script-loader';
-// import {myPlaces} from './places';
-// var locations=myPlaces;
-var markers = [];
-var infoWindows = [];
-class Map extends Component {
 
-  //   state = {
-  //     map: {},
-  //  locations:myPlaces
-
-  //   }
-  componentWillReceiveProps({ isScriptLoaded, isScriptLoadSucceed }) {
-    if (isScriptLoaded && !this.props.isScriptLoaded) {
-      if (isScriptLoadSucceed) {
-        var mymap = new window.google.maps.Map(document.getElementById('myMab'), {
-          center: {
-            lat: 26.820553,
-            lng: 30.802498
-          },
-          zoom: 6
-
-        });
-        // this.setState({ map: mymap });
-        var infoWindow = new window.google.maps.InfoWindow();
-        var bounds = new window.google.maps.LatLngBounds();
-        this.props.displayingPlaces.map((element) => {
-          var marker = new window.google.maps.Marker({
-            map: mymap,
-            position: element.location,
-            title: element.title,
-            animation: window.google.maps.Animation.DROP,
-            id: element.id
-          })
-
-          this.props.markers.push(marker);
-          // this.props.markers.map(ele => {
-          //   if (ele.title !== this.props.displayingPlaces[ele].title) {
-          //     ele.setMap = null;
-          //   }
-          // })
-          // this.props.filter(this.props.markers);
-          bounds.extend(marker.position);
-          marker.addListener('click', function () {
-            populateInfoWindow(this, infoWindow);
-            infoWindows.push(infoWindow);
-          });
-
-
-          mymap.fitBounds(bounds);
-        });// this is the end of the mapping
-        //this function I learnt it from lessons
-        function populateInfoWindow(marker, infowindow) {
-          if (infowindow.marker !== marker) {
-            infowindow.marker = marker;
-            infowindow.setContent('<div>hello</div>');
-            infowindow.open(mymap, marker);
-            infowindow.addListener('closeclick', function () {
-              infowindow.setMarker = null;
-            });
-            infowindow.setMarker = null;
-          }
-
-        }
-
-
-      } else {
-        setTimeout(() => {
-          alert('the is an error');
-        }, 500)
-      }
-
+class ListView extends Component {
+    openNav() {
+        document.getElementById("mySidenav").style.width = '250px';
+        document.getElementById("myMab").style.marginLeft = '250px';
     }
-  }
+    closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("myMab").style.marginLeft = "0";
+    }
+    render() {
+        //filtering the list
+console.log(this.props.filteredPlaces);
 
-  render() {
-    console.log(this.props.displayingPlaces);
-    return (
-      <div id='myMab'>
-      </div>
-    );
-  }
+        return (
+            <div>
+
+                <div id="mySidenav" className="sidenav">
+                    {/* <a href="#" className="closebtn" onClick={this.closeNav}>&times;</a> */}
+                    <button className="closebtn" onClick={this.closeNav}>&times;</button>
+                    <h1>Enter a place</h1>
+         
+                    <input type='text' placeholder='search places'
+                     value={this.props.query} 
+                     onChange={(event) =>this.props.updateQuery(event.target.value)}/>
+                    <ul>
+                        {this.props.filteredPlaces.map((element) => (
+                            <li key={element.id}>
+                                {element.title}
+                            </li>
+
+                        ))
+                        }
+
+                    </ul>
+
+
+                </div>
+
+
+                {/* <span onClick={this.openNav}>open</span> */}
+                {/* <div className='menu' onClick={this.openNav}>
+                    <div className='burger'  ></div>
+                    <div className='burger'  ></div>
+                    <div className='burger'  ></div>
+                </div> */}
+
+            </div>
+        );
+    }
 }
 
-export default scriptLoader(['https://maps.googleapis.com/maps/api/js?key=AIzaSyB_BMkMCB3RAcTv30V5ob3MrOD4-IQoLM4']
-  , "https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")(Map);;
-
-
-
+export default ListView;

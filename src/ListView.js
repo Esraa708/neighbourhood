@@ -11,7 +11,7 @@ class ListView extends Component {
     }
     render() {
         //filtering the list
-
+console.log(this.props.filteredPlaces);
 
         return (
             <div>
@@ -25,7 +25,7 @@ class ListView extends Component {
                      value={this.props.query} 
                      onChange={(event) =>this.props.updateQuery(event.target.value)}/>
                     <ul>
-                        {this.props.displayingPlaces.map((element) => (
+                        {this.props.filteredPlaces.map((element) => (
                             <li key={element.id}>
                                 {element.title}
                             </li>
