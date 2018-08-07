@@ -26,7 +26,7 @@ console.log(this.props.filteredPlaces);
                      onChange={(event) =>this.props.updateQuery(event.target.value)}/>
                     <ul>
                         {this.props.filteredPlaces.map((element) => (
-                            <li key={element.id}>
+                            <li key={element.id} >
                                 {element.title}
                             </li>
 
