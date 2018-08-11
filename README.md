@@ -15,7 +15,7 @@ that would install all npm depebdencies
 npm start
 ```
 the app will start in your browser with the url ```http://localhost:3000```
-#App dependencies
+# App dependencies
 * I used javascript framework react to build the app
 * Wiki api to search for places in wikapedia articles
 * I used the help of W3school to build offcanvas menu
