@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import escapeRegExp from 'escape-string-regexp';
-import sortBy from 'sort-by';
-
 import Map from './Map';
 import './App.css';
 import { myPlaces } from './places';
 import ListView from './ListView'
 class App extends Component {
   state = {
-    map: {},
-    marker: [],
     query: '',
     filteredPlaces: myPlaces
 
   }
- 
+  openNav() {
+    document.getElementById("mySidenav").style.width = '250px';
+    // document.getElementById("myMab").style.marginLeft = "250px";
+    // document.getElementById("myMab").style.width = "80%";
+  }
+  //to filter places in the list
   updateQuery = (query) => {
     let displayingPlaces;
     if (this.state.query) {
@@ -27,24 +28,40 @@ class App extends Component {
     }
     this.setState({ filteredPlaces: displayingPlaces, query: query.trim() });
   }
+  //when the user click on list item ,handel click should handel it
+  handelClick(ele) {
+    [...document.querySelectorAll('.gmnoprint > map > area')].find(m => m.title === ele).click();
+
+  }
+
 
 
   render() {
     return (
-      <div className="App">
-        <ListView locations={myPlaces}
-          query={this.state.query}
-          updateQuery={this.updateQuery}
-          markers={this.state.marker}
+      <div className="App" role='main'>
+        <nav>
+          <span onClick={this.openNav} tabIndex='2' className='open'>&#9776;</span>
+          <header tabIndex='1'>
+            <h1>Historical places in Egypt</h1>
+          </header>
+        </nav>
+
+
+        <Map
+
           filteredPlaces={this.state.filteredPlaces}
 
         />
-        <Map map={this.state.map}
-          locations={myPlaces}
-          markers={this.state.marker}
+
+        <ListView
           query={this.state.query}
+          updateQuery={this.updateQuery}
           filteredPlaces={this.state.filteredPlaces}
+          handelClick={this.handelClick}
+
+
         />
+
 
       </div>
     );
