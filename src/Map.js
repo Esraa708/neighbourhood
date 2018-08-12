@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import scriptLoader from 'react-async-script-loader';
 //using jsonp for solving problem of cores
 import fetchJsonp from 'fetch-jsonp';
-
+// import {myPlaces} from './places';
+// var locations=myPlaces;
 var markers = [];
 var InfoWindows = [];
 class Map extends Component {
@@ -17,21 +18,15 @@ class Map extends Component {
         document.getElementById("mySidenav").style.width = '250px';
         document.getElementById("myMab").style.marginLeft = "250px";
     }
-
+ 
+  
+  
 
     markers() {
         console.log(this.props.filteredPlaces)
-        var infoWindow = new window.google.maps.InfoWindow();
-        var bounds = new window.google.maps.LatLngBounds();
         this.props.filteredPlaces.map((element) => {
             // console.log(element)
-            var marker = new window.google.maps.Marker({
-                map: window.map,
-                position: element.location,
-                title: element.title,
-                animation: window.google.maps.Animation.DROP,
-                id: element.id
-            })
+    
             //Filter the data that is stored form wikipedia in the state to add them to windows info
             let bringData = this.state.data.filter((filtered) => element.name === filtered[0][0]).map(response => {
                 if (response.length === 0)
@@ -42,7 +37,7 @@ class Map extends Component {
                     return 'click to go to wiki search'
             })
             console.log(bringData);
-            console.log(this.state.data);
+          console.log(this.state.data);
 
 
             let bringLink = this.state.data.filter((filtered) => element.name === filtered[0][0]).map(response => {
@@ -54,14 +49,25 @@ class Map extends Component {
                     return 'https://www.wikipedia.org'
             })
             let content =
-                `<div tabIndex="0" class="infoWindow">
+                `<div tabIndex="0">
             <h2>${element.title}</h2>
             <p>${bringData}</p>
             <a href=${bringLink}>Click Here For More Info</a>
             
             </div>`
-
-            infoWindow.setContent(content);
+          
+            var bounds = new window.google.maps.LatLngBounds();
+            var marker = new window.google.maps.Marker({
+                map: window.map,
+                position: element.location,
+                title: element.title,
+                animation: window.google.maps.Animation.DROP,
+                
+            })
+            var infoWindow = new window.google.maps.InfoWindow({
+                content: content
+            });
+            // infoWindow.setContent(content);
             markers.push(marker);
             InfoWindows.push(infoWindow);
             marker.addListener('click', function () {
@@ -77,26 +83,30 @@ class Map extends Component {
                     setTimeout(() => { marker.setAnimation(null); }, 400)
                 }
             })
-            //bounds
+        
+            //Bounds
             markers.forEach((mark) =>
                 bounds.extend(mark.position))
             window.map.fitBounds(bounds)
         })
     }
+  
 
 
+   
+  
     componentDidMount() {
-
-        //I use wiki api to fetch data about location name
+        
+       //I use wiki api to fetch data about location name
         this.props.filteredPlaces.map((location) => {
             return fetchJsonp(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${location.name}&format=json&callback=wikiCallback`)
                 .then(response => response.json()).then((transformedResponse) => {
-                    let updatedData = [...this.state.data, [transformedResponse, transformedResponse[1][0], transformedResponse[3][0]]]
-
-                    this.setState(({ data: updatedData }));
-
+                    let updatedData = [...this.state.data,[transformedResponse,transformedResponse[1][0],transformedResponse[3][0]]]
+                    
+                    this.setState(({data:updatedData}) );
+                   
                 }).catch((ex) =>
-                    console.error('there is an error', ex)
+               console.error('there is an error',ex)
                 )
         })
         // console.log(this.state.data);
@@ -139,7 +149,7 @@ class Map extends Component {
                 });
                 this.markers()
 
-            } else {
+            }else{
                 alert('failed to load the map ')
             }
 
@@ -148,7 +158,7 @@ class Map extends Component {
     }
     render() {
         return (
-
+          
 
             <div id='myMab' role="application" tabIndex='3'>
 
@@ -156,7 +166,7 @@ class Map extends Component {
                     this.markers()
                 }
             </div>
-
+         
         );
     }
 }

@@ -1,6 +1,6 @@
 # Historical places in Egypt
 
-It is a singel page app made with react , it lets you search for some historical places in Egypt and disp;aying them on the map 
+It is a singel page app made with react , it lets you search for some historical places in Egypt and displaying them on the map 
 
 # How to run the app
 
